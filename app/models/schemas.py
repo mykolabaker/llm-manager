@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Dict, Any, Optional
 
 
@@ -10,14 +10,16 @@ class GenerateRequest(BaseModel):
     temperature: Optional[float] = Field(0.7, ge=0.0, le=2.0, description="Sampling temperature")
     max_tokens: Optional[int] = Field(150, ge=1, le=4000, description="Maximum number of tokens to generate")
 
-    @validator('prompt')
+    @field_validator('prompt')
+    @classmethod
     def validate_prompt(cls, v):
         """Validate that prompt is not just whitespace"""
         if not v.strip():
             raise ValueError('Prompt cannot be empty or just whitespace')
         return v.strip()
 
-    @validator('client_name')
+    @field_validator('client_name')
+    @classmethod
     def validate_client_name(cls, v):
         """Validate client name format"""
         if not v.replace('_', '').replace('-', '').isalnum():

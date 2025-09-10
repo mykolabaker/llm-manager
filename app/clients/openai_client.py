@@ -72,7 +72,7 @@ class OpenAIClient(BaseLLMClient):
                 else:
                     raise Exception(f"OpenAI API error: {response.status_code} - {response.text}")
 
-        except httpx.TimeoutException:
+        except (httpx.TimeoutException, asyncio.TimeoutError):
             raise Exception("OpenAI API request timed out")
         except httpx.RequestError as e:
             raise Exception(f"OpenAI API request failed: {str(e)}")

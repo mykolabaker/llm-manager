@@ -67,7 +67,7 @@ DEBUG=false
 
 # Server Configuration
 HOST=0.0.0.0
-PORT=8000
+PORT=8010
 
 # Request Configuration
 REQUEST_TIMEOUT=30
@@ -125,7 +125,7 @@ docker build -t llm-manager .
 2. **Run the container**:
 
 ```bash
-docker run -p 8000:8000 --env-file .env llm-manager
+docker run -p 8010:8010 --env-file .env llm-manager
 ```
 
 ## Usage
@@ -154,7 +154,7 @@ The service provides the following endpoints:
 #### Simple Text Generation
 
 ```bash
-curl -X POST "http://localhost:8000/generate" \
+curl -X POST "http://localhost:8010/generate" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "Write a haiku about programming",
@@ -173,7 +173,7 @@ Response:
 #### Detailed Text Generation
 
 ```bash
-curl -X POST "http://localhost:8000/generate/detailed" \
+curl -X POST "http://localhost:8010/generate/detailed" \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "Explain quantum computing",
@@ -198,7 +198,7 @@ Response:
 #### List Available Clients
 
 ```bash
-curl -X GET "http://localhost:8000/clients"
+curl -X GET "http://localhost:8010/clients"
 ```
 
 Response:
@@ -330,8 +330,8 @@ Create comprehensive tests following the existing patterns in `test_main.py`.
 
 When the service is running, visit:
 
-- **Interactive API docs**: http://localhost:8000/docs
-- **Alternative docs**: http://localhost:8000/redoc
+- **Interactive API docs**: http://localhost:8010/docs
+- **Alternative docs**: http://localhost:8010/redoc
 
 ## Design Patterns Used
 

@@ -5,9 +5,9 @@ import logging
 from contextlib import asynccontextmanager
 from typing import Dict, Any
 
-from .config import settings, get_client_configs
-from .managers.client_manager import ClientManager
-from .models.schemas import (
+from app.config import settings, get_client_configs
+from app.managers.client_manager import ClientManager
+from app.models.schemas import (
     GenerateRequest,
     GenerateResponse,
     ClientListResponse,
@@ -65,7 +65,7 @@ app = FastAPI(
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=settings.get_cors_origins_list(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -302,6 +302,14 @@ class TestFastAPIEndpoints:
 
     @pytest.fixture
     def client(self):
+        # Import here to avoid circular imports
+        from app.clients.mock_client import MockLLMClient
+        from app.main import client_manager
+        
+        # Ensure mock client is registered for testing
+        mock_client = MockLLMClient("mock")
+        client_manager.register_client(mock_client)
+        
         return TestClient(app)
 
     def test_health_endpoint(self, client):
@@ -427,6 +435,14 @@ class TestIntegration:
 
     @pytest.fixture
     def client(self):
+        # Import here to avoid circular imports
+        from app.clients.mock_client import MockLLMClient
+        from app.main import client_manager
+        
+        # Ensure mock client is registered for testing
+        mock_client = MockLLMClient("mock")
+        client_manager.register_client(mock_client)
+        
         return TestClient(app)
 
     def test_full_workflow_mock_client(self, client):
