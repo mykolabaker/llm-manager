@@ -1,0 +1,92 @@
+import os
+from typing import Optional
+from pydantic import BaseSettings, Field
+
+
+class Settings(BaseSettings):
+    """Application settings and configuration"""
+
+    # API Configuration
+    openai_api_key: Optional[str] = Field(None, env="OPENAI_API_KEY")
+    huggingface_api_key: Optional[str] = Field(None, env="HUGGINGFACE_API_KEY")
+
+    # OpenAI Configuration
+    openai_model: str = Field("gpt-3.5-turbo", env="OPENAI_MODEL")
+    openai_temperature: float = Field(0.7, env="OPENAI_TEMPERATURE")
+    openai_max_tokens: int = Field(150, env="OPENAI_MAX_TOKENS")
+
+    # Application Configuration
+    app_name: str = Field("LLM Client Manager", env="APP_NAME")
+    app_version: str = Field("1.0.0", env="APP_VERSION")
+    debug: bool = Field(False, env="DEBUG")
+
+    # Server Configuration
+    host: str = Field("0.0.0.0", env="HOST")
+    port: int = Field(8000, env="PORT")
+
+    # CORS Configuration
+    cors_origins: list[str] = Field(["*"], env="CORS_ORIGINS")
+
+    # Request Configuration
+    request_timeout: int = Field(30, env="REQUEST_TIMEOUT")
+    max_prompt_length: int = Field(10000, env="MAX_PROMPT_LENGTH")
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        case_sensitive = False
+
+
+def get_settings() -> Settings:
+    """Get application settings instance"""
+    return Settings()
+
+
+# Global settings instance
+settings = get_settings()
+
+
+def get_openai_config() -> dict:
+    """Get OpenAI configuration"""
+    return {
+        "api_key": settings.openai_api_key,
+        "model": settings.openai_model,
+        "temperature": settings.openai_temperature,
+        "max_tokens": settings.openai_max_tokens
+    }
+
+
+def validate_required_env_vars():
+    """Validate that required environment variables are set"""
+    errors = []
+
+    # Check if at least one API key is configured
+    if not settings.openai_api_key and not settings.huggingface_api_key:
+        errors.append("At least one API key must be configured (OPENAI_API_KEY or HUGGINGFACE_API_KEY)")
+
+    if errors:
+        raise ValueError("Configuration validation failed:\n" + "\n".join(f"- {error}" for error in errors))
+
+
+def get_client_configs() -> dict:
+    """Get configuration for all supported clients"""
+    configs = {}
+
+    # Mock client (always available)
+    configs["mock"] = {
+        "enabled": True,
+        "name": "mock",
+        "type": "mock"
+    }
+
+    # OpenAI client
+    if settings.openai_api_key:
+        configs["openai"] = {
+            "enabled": True,
+            "name": "openai",
+            "type": "openai",
+            "api_key": settings.openai_api_key,
+            "model": settings.openai_model
+        }
+
+    return configs
